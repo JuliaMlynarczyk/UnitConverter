@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Unit Converter</title>
+</head>
+<body>
+<main>
+    <h1>Unit Converter</h1>
+</main>
+<button id="length">Length</button>
+<button id="weight">Weight</button>
+<button id="temperature">Temperature</button>
+
+<form action="/convert" method="POST">
+    <input type="hidden" id="category_input" name="category" value="length">
+    <label for="fnumber">Enter the value to convert</label><br>
+    <input type="number" step="0.01" id="fnumber" name="fnumber"><br>
+
+    <label for="units_from">Unit to convert from</label><br>
+    <select id="units_from" name="units_from">
+    </select><br>
+
+    <label for="units_to">Unit to convert from</label><br>
+    <select id="units_to" name="units_to">
+    </select><br>
+
+    <input type="submit" value="Convert">
+</form>
+
+<hr>
+
+<div th:if="${result != null}">
+    <h2>Result of your calculation</h2>
+
+    <p>
+        <span th:text="${originalValue}">20</span>
+        <span th:text="${fromUnit}">ft</span>
+        =
+        <span th:text="${result}">609</span>
+        <span th:text="${toUnit}">cm</span>
+    </p>
+
+    <a href="/"><button type="button">Reset</button></a>
+</div>
+
+<div th:if="${error != null}">
+    <p style="color: red;" th:text="${error}">Error</p>
+</div>
+
+<script>
+    const unitData = {
+        length: [
+            { value: 'mm', label: 'Millimeters' },
+            { value: 'cm', label: 'Centimeters' },
+            { value: 'm', label: 'Meters' },
+            { value: 'km', label: 'Kilometers' },
+            { value: 'in', label: 'Inches' },
+            { value: 'ft', label: 'Feet' },
+            { value: 'yd', label: 'Yards' },
+            { value: 'mi', label: 'Miles' }
+        ],
+        weight: [
+            { value: 'mg', label: 'Milligrams' },
+            { value: 'g', label: 'Grams' },
+            { value: 'kg', label: 'Kilograms' },
+            { value: 'oz', label: 'Ounces' },
+            { value: 'lb', label: 'Pounds' }
+        ],
+        temperature: [
+            { value: 'c', label: 'Celsius' },
+            { value: 'f', label: 'Fahrenheit' },
+            { value: 'k', label: 'Kelvin' }
+        ]
+    };
+
+    const selectFrom = document.getElementById('units_from');
+    const selectTo = document.getElementById('units_to');
+    const categoryInput = document.getElementById('category_input');
+
+    function updateDropdowns(category) {
+        selectFrom.innerHTML = '';
+        selectTo.innerHTML = '';
+
+        unitData[category].forEach (unit => {
+            selectFrom.add(new Option(unit.label, unit.value));
+            selectTo.add(new Option(unit.label, unit.value));
+        });
+
+        categoryInput.value = category;
+    }
+
+    document.getElementById('length').addEventListener('click', function() {
+        updateDropdowns('length');
+    });
+
+    document.getElementById('weight').addEventListener('click', function() {
+        updateDropdowns('weight');
+    });
+
+    document.getElementById('temperature').addEventListener('click', function() {
+        updateDropdowns('temperature');
+    });
+
+    updateDropdowns('length');
+</script>
+</body>
+</html>
